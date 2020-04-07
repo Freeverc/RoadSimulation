@@ -10,21 +10,21 @@ vehicle_lenth = 4
 vehicle_width = 2
 
 # 宽度为7.5米，单车道约为4米
-road_length = 300
+road_length = 500
 road_width = 8
 lane_width = road_width / 2
-road_safe_distance = 20
+road_safe_distance = 15
 
 epsilon_t = 0.001
-epsilon_t_x = 1 * epsilon_t
+epsilon_t_x = 5 * epsilon_t
 epsilon_t_v = 10 * epsilon_t
-epsilon_t_a = 10 * epsilon_t
+epsilon_t_a = 50 * epsilon_t
 epsilon_t_da = 100 * epsilon_t
 
-v_abcd = 15
-v_e = v_abcd + 10
+v_abcd = 50/3.6
+v_e = 60/3.6
 a_init = 0
-max_v = v_abcd + 10
+max_v = 60/3.6
 min_v = v_abcd - 10
 max_a = 2
 min_a = -2
@@ -41,6 +41,7 @@ class Car:
     safe_distance = road_safe_distance
     adjust_dist = road_safe_distance + 10
     adjust_done = False
+    pass_done = False
 
     @staticmethod
     def gen_neighbors(cars):
@@ -72,6 +73,7 @@ class Car:
     @staticmethod
     def gen_expected_t(cars):
         Car.t_expected = (Car.x_middle_init - 1.5 * Car.safe_distance) / (v_e - v_abcd)
+        # Car.t_expected = (Car.x_middle_init - 1.5 * Car.safe_distance - lane_width / 5 * v_e) / (v_e - v_abcd)
         # Car.t_expected = (Car.x_middle_init + v_abcd * Car.t_expected - 1.5 * Car.safe_distance) / (v_e - v_abcd)
 
     @staticmethod
@@ -81,6 +83,7 @@ class Car:
         cars[2].aim_x = Car.x_middle_init + v_abcd * Car.t_expected + 0.5 * Car.safe_distance
         cars[3].aim_x = Car.x_middle_init + v_abcd * Car.t_expected + 1.5 * Car.safe_distance
         cars[4].aim_x = Car.x_middle_init + v_abcd * Car.t_expected - 1.5 * Car.safe_distance
+        # cars[4].aim_x = Car.x_middle_init + v_abcd * Car.t_expected - 1.5 * Car.safe_distance - lane_width / 5 * v_e
         print(cars[0].aim_x, cars[1].aim_x, cars[2].aim_x, cars[3].aim_x, cars[4].aim_x)
 
     @staticmethod
@@ -149,7 +152,7 @@ class Car:
         self.x = self.xInit
         self.y = self.yInit
         self.v = self.vInit
-        self.vy = 15
+        self.vy = 5
         # self.vy = self.v / 2
         self.a = self.aInit
         self.delta_a = 0
